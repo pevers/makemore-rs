@@ -1,0 +1,9 @@
+[package]
+name = "part-one"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+burn = { path = "../../burn/crates/burn", features = ["train", "ndarray"] }
+burn-ndarray = { path = "../../burn/crates/burn-ndarray" }
+rand = "0.9.1"
