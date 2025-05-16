@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug Rust Program",
+        "type": "lldb-dap",
+        "request": "launch",
+        "program": "${workspaceFolder}/part-one/target/debug/part-one",
+        "args": [],
+        "cwd": "${workspaceFolder}/part-one",
+        "stopOnEntry": false
+      }
+    ]
+  }

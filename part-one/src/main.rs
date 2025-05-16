@@ -7,11 +7,16 @@ use burn::optim::{AdamConfig, Optimizer};
 use burn::prelude::Backend;
 use burn::tensor::backend::AutodiffBackend;
 use burn::tensor::{Tensor, activation::softmax};
-use burn_ndarray::NdArray;
 use model::{Model, ModelConfig};
 use rand::Rng;
 use std::fs::File;
 use std::io::{BufReader, Read};
+
+#[cfg(not(feature = "metal"))]
+use burn_ndarray::NdArray;
+
+#[cfg(feature = "metal")]
+use burn::backend::Metal;
 
 fn stoi(c: char) -> u32 {
     if c == '.' { 0 } else { c as u32 - 96 }
@@ -73,7 +78,7 @@ pub fn run<B: AutodiffBackend>(device: B::Device) {
         Tensor::arange(0..input_tensor.shape().num_elements() as i64, &device);
     let lr: LearningRate = 0.1;
 
-    for i in 0..200 {
+    for i in 0..100 {
         let logits = model.forward(input_tensor.clone());
         let probs = softmax(logits, 1);
         let row = probs.select(0, row_indices.clone());
@@ -84,7 +89,7 @@ pub fn run<B: AutodiffBackend>(device: B::Device) {
         let grads = loss.backward();
         let grads = GradientsParams::from_grads(grads, &model);
         model = optimizer.clone().step(lr, model, grads);
-        println!("Iteration: {}, loss: {}", i, loss.to_data());
+        println!("iteration: {}, loss: {}", i, loss.to_data());
     }
 
     // Inference example
@@ -107,7 +112,14 @@ pub fn run<B: AutodiffBackend>(device: B::Device) {
     }
 }
 
+#[cfg(feature = "metal")]
 fn main() {
-    let device = burn::backend::ndarray::NdArrayDevice::default();
+    let device = Default::default();
+    run::<Autodiff<Metal>>(device);
+}
+
+#[cfg(not(feature = "metal"))]
+fn main() {
+    let device = Default::default();
     run::<Autodiff<NdArray>>(device);
 }

@@ -19,3 +19,9 @@ yaya
 moa
 mayn
 ```
+
+To run it on Apple Silicon:
+
+```
+cargo run --release --features metal
+```
