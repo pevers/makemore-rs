@@ -4,9 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-burn = { git = "https://github.com/tracel-ai/burn.git", features = ["train", "ndarray"] }
-burn-ndarray = { git = "https://github.com/tracel-ai/burn.git", package = "burn-ndarray" }
+burn = { version = "0.17.0", features = ["train", "ndarray"] }
+burn-ndarray = { version = "0.17.0", package = "burn-ndarray" }
+env_logger = "0.11.8"
 rand = "0.9.1"
-
-[features]
-metal = ["burn/metal"]

@@ -7,16 +7,11 @@ use burn::optim::{AdamConfig, Optimizer};
 use burn::prelude::Backend;
 use burn::tensor::backend::AutodiffBackend;
 use burn::tensor::{Tensor, activation::softmax};
+use burn_ndarray::NdArray;
 use model::{Model, ModelConfig};
 use rand::Rng;
 use std::fs::File;
 use std::io::{BufReader, Read};
-
-#[cfg(not(feature = "metal"))]
-use burn_ndarray::NdArray;
-
-#[cfg(feature = "metal")]
-use burn::backend::Metal;
 
 fn stoi(c: char) -> u32 {
     if c == '.' { 0 } else { c as u32 - 96 }
@@ -112,14 +107,8 @@ pub fn run<B: AutodiffBackend>(device: B::Device) {
     }
 }
 
-#[cfg(feature = "metal")]
 fn main() {
-    let device = Default::default();
-    run::<Autodiff<Metal>>(device);
-}
-
-#[cfg(not(feature = "metal"))]
-fn main() {
+    env_logger::init();
     let device = Default::default();
     run::<Autodiff<NdArray>>(device);
 }
